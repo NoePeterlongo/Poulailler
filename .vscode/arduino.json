@@ -1,0 +1,5 @@
+{
+    "board": "arduino:avr:uno",
+    "sketch": "Poulailler.ino",
+    "port": "/dev/ttyUSB0"
+}

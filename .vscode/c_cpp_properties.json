@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "/home/noe/Téléchargements/arduino-1.8.12/tools/**",
+                "/home/noe/Téléchargements/arduino-1.8.12/hardware/arduino/avr/**"
+            ],
+            "forcedInclude": [
+                "/home/noe/Téléchargements/arduino-1.8.12/hardware/arduino/avr/cores/arduino/Arduino.h"
+            ],
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu18",
+            "cppStandard": "gnu++14"
+        }
+    ],
+    "version": 4
+}
