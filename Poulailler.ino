@@ -1,13 +1,16 @@
 
-int a = 0;
+#include "configuration.h"
+#include "gestionMoteur.h"
 
 void setup()
 {
-    pinMode(13, OUTPUT);
+    if(DEBUG_SERIAL) { Serial.begin(9600); Serial.println("Initialisation du programme..."); }
+
+    gestionMoteur::initialiser();
+    
 }
 
 void loop()
 {
-    digitalWrite(13, a++%2);
-    delay(500);
+    
 }
