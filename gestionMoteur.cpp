@@ -33,7 +33,14 @@ namespace gestionMoteur{
         digitalWrite(PIN_COMMANDE_MOTEUR_OUVERTURE, HIGH);
 
         //attente d'un evenement de fin
-        while(millis() < dateDebutOuverture + TIMEOUT_MOTEUR_PORTE && !digitalRead(PIN_CAPTEUR_PORTE_OUVERTE)); 
+        #if UTILISER_MESURE_COURANT
+            while(millis() < dateDebutOuverture + TIMEOUT_MOTEUR_PORTE && 
+                    !digitalRead(PIN_CAPTEUR_PORTE_OUVERTE) &&
+                    analogRead(PIN_CAPTEUR_COURANT_MOTEUR)*GAIN_COURANT < COURANT_MAX
+                    );
+        #else
+            while(millis() < dateDebutOuverture + TIMEOUT_MOTEUR_PORTE && !digitalRead(PIN_CAPTEUR_PORTE_OUVERTE)); 
+        #endif
 
         digitalWrite(PIN_COMMANDE_MOTEUR_OUVERTURE, LOW);
         
@@ -69,7 +76,14 @@ namespace gestionMoteur{
         digitalWrite(PIN_COMMANDE_MOTEUR_FERMETURE, HIGH);
 
         //attente d'un evenement de fin
-        while(millis() < dateDebutFermeture + TIMEOUT_MOTEUR_PORTE && !digitalRead(PIN_CAPTEUR_PORTE_FERMEE)); 
+        #if UTILISER_MESURE_COURANT
+            while(millis() < dateDebutFermeture + TIMEOUT_MOTEUR_PORTE && 
+                    !digitalRead(PIN_CAPTEUR_PORTE_FERMEE) &&
+                    analogRead(PIN_CAPTEUR_COURANT_MOTEUR)*GAIN_COURANT < COURANT_MAX
+                    );
+        #else
+            while(millis() < dateDebutFermeture + TIMEOUT_MOTEUR_PORTE && !digitalRead(PIN_CAPTEUR_PORTE_FERMEE)); 
+        #endif
 
         digitalWrite(PIN_COMMANDE_MOTEUR_FERMETURE, LOW);
         
