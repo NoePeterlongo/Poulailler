@@ -1,2 +1,3 @@
 verifier le non-bloquage du pgm en cas d'erreur de communication i2C
 verifier les procedures de porte
+verifier calcul soleil, notamment pour d'autres annees

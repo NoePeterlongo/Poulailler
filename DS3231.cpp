@@ -22,7 +22,7 @@ David Merrifield
 Released into the public domain.
 */
 
-#include <DS3231.h>
+#include "DS3231.h"
 
 // These included for the DateTime class inclusion; will try to find a way to
 // not need them in the future...
@@ -129,7 +129,7 @@ DateTime::DateTime (uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uin
 // supported formats are date "Mmm dd yyyy" and time "hh:mm:ss" (same as __DATE__ and __TIME__)
 DateTime::DateTime(const char* date, const char* time) {
    static const char month_names[] = "JanFebMarAprMayJunJulAugSepOctNovDec";
-   static const char buff[4];
+   static const char buff[4] = {0,0,0,0};
    int y;
    sscanf(date, "%s %d %d", buff, &d, &y);
    yOff = y >= 2000 ? y - 2000 : y;
