@@ -100,6 +100,7 @@ namespace gestionMoteur{
 
     void forcerOuverture()
     {
+        if(DEBUG_SERIAL) Serial.println("Ouverture forcee");
         //securite
         analogWrite(PIN_COMMANDE_MOTEUR_FERMETURE, 0);
         delay(100);
@@ -109,6 +110,7 @@ namespace gestionMoteur{
 
     void forcerFermeture()
     {
+        if(DEBUG_SERIAL) Serial.println("Fermeture forcee");
         //securite
         analogWrite(PIN_COMMANDE_MOTEUR_OUVERTURE, 0);
         delay(100);
@@ -118,6 +120,7 @@ namespace gestionMoteur{
 
     void stop()
     {
+        if(DEBUG_SERIAL) Serial.println("Stop moteur");
         analogWrite(PIN_COMMANDE_MOTEUR_FERMETURE, 0);
         analogWrite(PIN_COMMANDE_MOTEUR_OUVERTURE, 0);
     }

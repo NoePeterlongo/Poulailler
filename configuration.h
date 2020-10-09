@@ -5,7 +5,7 @@
 
 /*Description electrique, issue de l'ancien code
 //Boutons
---> branchés en PULLUP interne, etat actif haut
+--> branchés en PULLUP interne, etat actif bas
 btn ouverture manuelle --> 2
 btn fermeture manuelle --> 6
 
@@ -31,12 +31,13 @@ PWM, réglé à 250 (pas 255 tant qu'à faire ?)
 
 //options
 #define DEBUG_SERIAL true
-#define TIMEOUT_MOTEUR_PORTE 5000 //timeout de securite = tps maximal d'activation du moteur (millisecondes)
+#define TIMEOUT_MOTEUR_PORTE 6000 //timeout de securite = tps maximal d'activation du moteur (millisecondes)
 
-#define UTILISER_MESURE_COURANT true
+#define UTILISER_MESURE_COURANT false
 #define COURANT_MAX 690
 
 #define CAPTEUR_ACTIF 0 //Les butees sont actives a 0
+#define BTN_ACTIF 0
 
 #define VITESSE_MOTEUR 250
 
@@ -46,6 +47,8 @@ PWM, réglé à 250 (pas 255 tant qu'à faire ?)
 #define PIN_CAPTEUR_PORTE_OUVERTE 11
 #define PIN_CAPTEUR_PORTE_FERMEE 12
 #define PIN_CAPTEUR_COURANT_MOTEUR A2
+#define PIN_BTN_OUVERTURE_MANUELLE 2
+#define PIN_BTN_FERMETURE_MANUELLE 6
 
 
 #endif
