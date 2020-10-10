@@ -59,7 +59,7 @@ void calculSoleil(int D, int M, int Y, float lat, float longitude,
         *minuteCoucher = (int)sunset;
     }
 
-bool jour(int D, int M, int Y, int H, int Min, float offsetLeverMinutes=0, float offsetCoucherMinutes=0,
+bool jourSoleil(int D, int M, int Y, int H, int Min, float offsetLeverMinutes=0, float offsetCoucherMinutes=0,
         float lat=45.9f, float longitude=6.15f)
 {
     //verification des donnees
