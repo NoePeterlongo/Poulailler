@@ -62,8 +62,6 @@ void calculSoleil(int D, int M, int Y, float lat, float longitude,
 bool jour(int D, int M, int Y, int H, int Min, float offsetLeverMinutes=0, float offsetCoucherMinutes=0,
         float lat=45.9f, float longitude=6.15f)
 {
-    //verification des donnees
-    if(DEBUG_SERIAL) if(Y<2020 || Y>2100) Serial.println("Erreur d'horloge");//Pour les sms, il faudra deplacer cette verif
     int minuteLever, minuteCoucher;
     calculSoleil(D, M, Y, lat, longitude, &minuteLever, &minuteCoucher);
 
@@ -71,7 +69,7 @@ bool jour(int D, int M, int Y, int H, int Min, float offsetLeverMinutes=0, float
     minuteCoucher += offsetCoucherMinutes;
 
     int minuteActuelle = H*60 + Min;
-    //Serial.println(minuteLever); Serial.println(minuteActuelle); Serial.println(minuteCoucher);
+    Serial.println(minuteLever); Serial.println(minuteActuelle); Serial.println(minuteCoucher);
 
     return minuteActuelle >= minuteLever && minuteActuelle <= minuteCoucher;
 }

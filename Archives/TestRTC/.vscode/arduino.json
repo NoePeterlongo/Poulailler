@@ -1,0 +1,5 @@
+{
+    "board": "arduino:avr:uno",
+    "sketch": "TestRTC.ino",
+    "port": "/dev/ttyUSB0"
+}
