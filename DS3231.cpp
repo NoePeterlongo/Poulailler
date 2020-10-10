@@ -44,8 +44,8 @@ Released into the public domain.
 // Constructor
 DS3231::DS3231() {
 	// nothing to do for this constructor.
-	//sauf peut-etre
-	Wire.setTimeout(300);
+	//Sauf peut etre (Modifie par Noe)
+	Wire.begin();
 }
 
 // Utilities from JeeLabs/Ladyada

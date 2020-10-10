@@ -1,8 +1,7 @@
 #include "configuration.h"
 
 void calculSoleil(int D, int M, int Y, float lat, float longitude,
-                    int8_t *heureLever, int8_t *minuteLever, int8_t *heureCoucher, int8_t *minuteCoucher, 
-                    float offsetLeverMinutes=0, float offsetCoucherMinutes=0)
+                    int *minuteLever, int *minuteCoucher)
     {
         //Rang du jour
         //Calcul jour julien https://fr.wikipedia.org/wiki/Jour_julien
@@ -56,8 +55,21 @@ void calculSoleil(int D, int M, int Y, float lat, float longitude,
         Serial.print((int)(sunset/60));  Serial.print("h"); Serial.println((int)sunset%60);*/
 
         //Sortie
-        *heureLever = (int8_t)(sunrise/60);
-        *minuteLever = (int)sunrise%60;
-        *heureCoucher = (int8_t)(sunset/60);
-        *minuteCoucher = (int)sunset%60;
+        *minuteLever = (int)sunrise;
+        *minuteCoucher = (int)sunset;
     }
+
+bool jour(int D, int M, int Y, int H, int Min, float offsetLeverMinutes=0, float offsetCoucherMinutes=0,
+        float lat=45.9f, float longitude=6.15f)
+{
+    int minuteLever, minuteCoucher;
+    calculSoleil(D, M, Y, lat, longitude, &minuteLever, &minuteCoucher);
+
+    minuteLever += offsetLeverMinutes;
+    minuteCoucher += offsetCoucherMinutes;
+
+    int minuteActuelle = H*60 + Min;
+    //Serial.println(minuteLever); Serial.println(minuteActuelle); Serial.println(minuteCoucher);
+
+    return minuteActuelle >= minuteLever && minuteActuelle <= minuteCoucher;
+}

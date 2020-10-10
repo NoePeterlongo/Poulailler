@@ -1,6 +1,5 @@
 {
-    "board": "arduino:avr:nano",
+    "board": "arduino:avr:uno",
     "sketch": "Poulailler.ino",
-    "port": "/dev/ttyUSB0",
-    "configuration": "cpu=atmega328old"
+    "port": "/dev/ttyUSB0"
 }
