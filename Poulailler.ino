@@ -60,7 +60,7 @@ void loop()
     }
 
     //Affichage des mesures
-    if(millis() > dateDernierAffichage + 2000)
+    if(millis() > dateDernierAffichage + 300000)
     {
         dateDernierAffichage = millis();
         Serial.print(Horloge.getDate()); Serial.print(";");
@@ -72,6 +72,7 @@ void loop()
         Serial.print(Horloge.getTemperature()); Serial.print(";");
         bool ilFaitJour = jourSoleil(Horloge.getDate(), Horloge.getMonth(century), 2000+Horloge.getYear(), Horloge.getHour(h12, PM), Horloge.getMinute());
         Serial.print(ilFaitJour); Serial.print(";");
+        Serial.print(5*(double)analogRead(A6)/1023*97/22); Serial.print(";");
         Serial.println(analogRead(A1)); 
     }
 }
