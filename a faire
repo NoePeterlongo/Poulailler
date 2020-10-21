@@ -3,3 +3,4 @@ verifier les procedures de porte
 verifier calcul soleil, notamment pour d'autres annees
 Verifier que les sorties PWM moteur ne sont pas inversées
 Remonter l'erreur de date
+modes degrades : Perte de RTC, perte de photoresistance

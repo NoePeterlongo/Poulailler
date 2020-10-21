@@ -29,17 +29,44 @@ PWM, réglé à 250 (pas 255 tant qu'à faire ?)
 --> 5
 */
 
+/*Procédure jour/nuit:
+
+------LEVER-MARGE_PRELEVER*****LEVER+MARGE_POSTLEVER+++++COUCHER-MARGE_PRECOUCHER****COUCHER+MARGE_POSTCOUCHER-----
+
+----    ->  Nuit            -> porte fermee
+****    ->  Aube/crepuscule -> La luminosite decide
+++++    ->  jour            -> porte ouverte
+LEVER/COUCHER   -> definis par RTC et calcul
+MARGES          -> definies ci-dessous
+
+Luminosite -> Une fois un seuil passe, on attend DELAI_LUMINOSITE avant de verifier et de prendre une decision
+
+*/
+
 //options
 #define DEBUG_SERIAL true
 #define TIMEOUT_MOTEUR_PORTE 6000 //timeout de securite = tps maximal d'activation du moteur (millisecondes)
+#define VITESSE_MOTEUR 250
 
 #define UTILISER_MESURE_COURANT false
 #define COURANT_MAX 690
 
+//detection du jour
+#define SEUIL_MATINAL       85//200
+#define SEUIL_VESPERAL      150//500
+#define DELAI_LUMINOSITE    600000L
+#define PERIODE_MESURE_LUMINOSITE 1000 //pour la moyenne
+#define MARGE_PRELEVER      30//Les marges sont en minutes
+#define MARGE_POSTLEVER     30
+#define MARGE_PRECOUCHER    30
+#define MARGE_POSTCOUCHER   30
+
+
+
+//Définit l'état actif des capteurs
 #define CAPTEUR_ACTIF 0 //Les butees sont actives a 0
 #define BTN_ACTIF 0
 
-#define VITESSE_MOTEUR 250
 
 //branchements
 #define PIN_COMMANDE_MOTEUR_OUVERTURE 10
@@ -47,8 +74,10 @@ PWM, réglé à 250 (pas 255 tant qu'à faire ?)
 #define PIN_CAPTEUR_PORTE_OUVERTE 11
 #define PIN_CAPTEUR_PORTE_FERMEE 12
 #define PIN_CAPTEUR_COURANT_MOTEUR A2
+#define PIN_PHOTORESISTANCE A0
 #define PIN_BTN_OUVERTURE_MANUELLE 2
 #define PIN_BTN_FERMETURE_MANUELLE 6
+#define PIN_BTN_MODE 3//mode auto/manuel
 
 
 #endif

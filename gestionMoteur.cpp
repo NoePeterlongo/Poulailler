@@ -51,6 +51,7 @@ namespace gestionMoteur{
             return false;
         }
         //sinon tout est OK
+        if(DEBUG_SERIAL) Serial.println("Porte ouverte");
         return true;
     }
 
@@ -94,6 +95,7 @@ namespace gestionMoteur{
             return false;
         }
         //sinon tout est OK
+        if(DEBUG_SERIAL) Serial.println("Porte fermee");
         return true;
     }
 
@@ -125,18 +127,18 @@ namespace gestionMoteur{
         analogWrite(PIN_COMMANDE_MOTEUR_OUVERTURE, 0);
     }
 
-    int etatPorte()
+    enumEtatPorte etatPorte()
     {
         bool capteurOuverture = digitalRead(PIN_CAPTEUR_PORTE_OUVERTE) == CAPTEUR_ACTIF;
         bool capteurFermeture = digitalRead(PIN_CAPTEUR_PORTE_FERMEE) == CAPTEUR_ACTIF;
 
         if(capteurFermeture && ! capteurOuverture)
-            return porteFermee;
+            return PORTE_FERMEE;
         if(capteurOuverture && ! capteurFermeture)
-            return porteOuverte;
+            return PORTE_OUVERTE;
         if(!capteurFermeture && ! capteurOuverture)
-            return intermediaire;
+            return INTERMEDIAIRE;
         if(capteurOuverture && capteurFermeture)
-            return erreur;
+            return ERREUR;
     }
 }

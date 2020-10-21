@@ -16,8 +16,8 @@ namespace gestionMoteur
     void forcerFermeture();
     void stop();
 
-    //info
-    int etatPorte();
     //etats possibles
-    const int porteOuverte = 0, porteFermee = 1, erreur = -1, intermediaire = 2; 
+    enum enumEtatPorte{PORTE_OUVERTE, PORTE_FERMEE, INTERMEDIAIRE, ERREUR};
+    //info
+    enumEtatPorte etatPorte();
 }

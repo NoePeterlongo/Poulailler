@@ -59,19 +59,27 @@ void calculSoleil(int D, int M, int Y, float lat, float longitude,
         *minuteCoucher = (int)sunset;
     }
 
-bool jourSoleil(int D, int M, int Y, int H, int Min, float offsetLeverMinutes=0, float offsetCoucherMinutes=0,
-        float lat=45.9f, float longitude=6.15f)
+enum enumEtatSoleil {JOUR, CREPUSCULE, NUIT, AUBE, ERREUR=-1};
+
+enumEtatSoleil getEtatSoleil(int D, int M, int Y, int H, int Min, int margePreLever=0, int margePostLever=0,
+         int margePreCoucher=0, int margePostCoucher=0, float lat=45.9f, float longitude=6.15f)
 {
     //verification des donnees
-    if(DEBUG_SERIAL) if(Y<2020 || Y>2100) Serial.println("Erreur d'horloge");//Pour les sms, il faudra deplacer cette verif
+    if(Y<2020 || Y>2100)
+    {
+        if(DEBUG_SERIAL)  Serial.println("Erreur d'horloge");//Pour les sms, il faudra deplacer cette verif
+        return ERREUR;
+    }
+
     int minuteLever, minuteCoucher;
     calculSoleil(D, M, Y, lat, longitude, &minuteLever, &minuteCoucher);
-
-    minuteLever += offsetLeverMinutes;
-    minuteCoucher += offsetCoucherMinutes;
 
     int minuteActuelle = H*60 + Min;
     //Serial.println(minuteLever); Serial.println(minuteActuelle); Serial.println(minuteCoucher);
 
-    return minuteActuelle >= minuteLever && minuteActuelle <= minuteCoucher;
+    if(minuteActuelle < minuteLever - margePreLever) return NUIT;
+    else if (minuteActuelle < minuteLever + margePostLever) return AUBE;
+    else if (minuteActuelle < minuteCoucher - margePreCoucher) return JOUR;
+    else if (minuteActuelle < minuteCoucher + margePostCoucher) return CREPUSCULE;
+    else return NUIT;
 }
