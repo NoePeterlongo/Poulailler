@@ -151,7 +151,7 @@ void loop()
     }
 
     //Affichage des mesures
-    if(millis() > dateDernierAffichage + 1000)
+    if(millis() > dateDernierAffichage + 60000)
     {
         dateDernierAffichage = millis();
         Serial.print(Horloge.getDate()); Serial.print(";");
