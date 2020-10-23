@@ -21,6 +21,13 @@ void clignottement(float frequence = 1)
     sei();
 }
 
+void clignottementOff()
+{
+    cli();
+    TIMSK1 &= 0b11111101;//disable timer compare interrupt
+    sei();
+}
+
 ISR(TIMER1_COMPA_vect){
   if (toggleLEDBUILTIN){
     digitalWrite(LED_BUILTIN,HIGH);
