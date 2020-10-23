@@ -1,5 +1,6 @@
 
 #include "configuration.h"
+#include "GSM.h"
 #include "gestionMoteur.h"
 #include "calculSoleil.h"
 #include "DS3231.h"
@@ -16,6 +17,7 @@ struct {
     bool btnModeEnfonce = false;//"le btn etait-il enfonce aux dernieres nouvelles ?"
     bool erreurHorloge = false;
 } flags;
+
 unsigned long datePremiereMesureLuminosite, dateDerniereMesureLuminosite;
 double moyenneLuminosite;
 unsigned long nbPointsMoyenne = 0;
@@ -56,7 +58,7 @@ void loop()
         {
             flags.btnModeEnfonce = false;
             flags.modeManuel = !flags.modeManuel;
-            if(DEBUG_SERIAL) Serial.print("Passage en mode "); if(flags.modeManuel) Serial.println("manuel"); else Serial.println("automatique");
+            if(DEBUG_SERIAL) {Serial.print("Passage en mode "); if(flags.modeManuel) Serial.println("manuel"); else Serial.println("automatique");}
         }
     }
     else flags.btnModeEnfonce = false;//au cas ou
