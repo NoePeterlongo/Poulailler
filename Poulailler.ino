@@ -92,7 +92,9 @@ void loop()
         Serial.print(flags.modeManuel); Serial.print(";");
         Serial.print(gestionMoteur::etatPorte()); Serial.print(";");
         Serial.print(flags.enAttenteVerificationLuminosite); Serial.print(";");
-        Serial.println(moyenneLuminosite); 
+        Serial.print(moyenneLuminosite); 
+        Serial.print(flags.erreurHorloge); Serial.print(";");
+
     }
 }
 
@@ -176,6 +178,8 @@ void ModeAutomatiqueSansHorloge()
 {
     //Pour savoir si on est en mode jour ou nuit, on regarde l'état de la porte
     //2 cas : soit on attend une confirmation de luminosite, soit non
+    flags.etatPorte = gestionMoteur::etatPorte();
+    
     if(flags.enAttenteVerificationLuminosite)
     {
 

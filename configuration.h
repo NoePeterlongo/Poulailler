@@ -56,10 +56,10 @@ Luminosite -> Une fois un seuil passe, on attend DELAI_LUMINOSITE avant de verif
 #define SEUIL_VESPERAL      150//500
 #define DELAI_LUMINOSITE    600000L
 #define PERIODE_MESURE_LUMINOSITE 1000 //pour la moyenne
-#define MARGE_PRELEVER      30//Les marges sont en minutes
-#define MARGE_POSTLEVER     30
+#define MARGE_PRELEVER      15//Les marges sont en minutes
+#define MARGE_POSTLEVER     45
 #define MARGE_PRECOUCHER    30
-#define MARGE_POSTCOUCHER   30
+#define MARGE_POSTCOUCHER   45
 
 
 
