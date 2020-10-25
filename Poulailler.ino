@@ -173,9 +173,9 @@ void ModeAutomatiqueNormal()
 void ModeAutomatiqueSansHorloge()
 {
     digitalWrite(LED_BUILTIN, HIGH);
-    delay(100);
+    delay(50);
     digitalWrite(LED_BUILTIN, LOW);
-    delay(100);
+    delay(50);
 
     //Pour savoir si on est en mode jour ou nuit, on regarde l'état de la porte
     //2 cas : soit on attend une confirmation de luminosite, soit non
