@@ -4,7 +4,6 @@
 #include "gestionMoteur.h"
 #include "calculSoleil.h"
 #include "DS3231.h"
-#include "clignottement.h"
 
 
 //FLAGS
@@ -92,8 +91,8 @@ void loop()
         Serial.print(flags.modeManuel); Serial.print(";");
         Serial.print(gestionMoteur::etatPorte()); Serial.print(";");
         Serial.print(flags.enAttenteVerificationLuminosite); Serial.print(";");
-        Serial.print(moyenneLuminosite); 
-        Serial.print(flags.erreurHorloge); Serial.print(";");
+        Serial.print(moyenneLuminosite); Serial.print(";");
+        Serial.println(flags.erreurHorloge);
 
     }
 }
@@ -107,11 +106,10 @@ void ModeAutomatiqueNormal()
     flags.etatPorte = gestionMoteur::etatPorte();
 
     //detection erreur d'horloge
-    if(flags.etatSoleil = enumEtatSoleil::ERREUR)
+    if(flags.etatSoleil == enumEtatSoleil::ERREUR)
     {
         flags.erreurHorloge = true; //Pour passer en mode sans horloge
         flags.enAttenteVerificationLuminosite = false;
-        clignottement(5);
         if(DEBUG_SERIAL) Serial.println("Erreur d'horloge, passage en mode sans horloge");
     }
 
@@ -119,14 +117,12 @@ void ModeAutomatiqueNormal()
     if(flags.etatSoleil == JOUR && flags.etatPorte != gestionMoteur::PORTE_OUVERTE)
     {
         if(DEBUG_SERIAL) Serial.println("Ouverture forcee par RTC");
-        clignottement(0.5f);//Signalement de cette anomalie
         gestionMoteur::ouvrir();
         flags.enAttenteVerificationLuminosite = false;
     }
     if(flags.etatSoleil == NUIT && flags.etatPorte != gestionMoteur::PORTE_FERMEE)
     {
         if(DEBUG_SERIAL) Serial.println("Fermeture forcee par RTC");
-        clignottement(1);//Signalement de cette anomalie
         gestionMoteur::fermer();
         flags.enAttenteVerificationLuminosite = false;
     }
@@ -176,21 +172,26 @@ void ModeAutomatiqueNormal()
 
 void ModeAutomatiqueSansHorloge()
 {
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(100);
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(100);
+
     //Pour savoir si on est en mode jour ou nuit, on regarde l'état de la porte
     //2 cas : soit on attend une confirmation de luminosite, soit non
     flags.etatPorte = gestionMoteur::etatPorte();
-    
+
     if(flags.enAttenteVerificationLuminosite)
     {
 
         if(millis()>datePremiereMesureLuminosite + DELAI_LUMINOSITE)//date de confirmation atteinte, fin de la moyenne
         {
             //confirmation soir
-            if(flags.etatPorte == gestionMoteur::PORTE_OUVERTE && moyenneLuminosite > SEUIL_VESPERAL)//la tension baisse avec la luminosite
+            if(flags.etatPorte != gestionMoteur::PORTE_FERMEE && moyenneLuminosite > SEUIL_VESPERAL)//la tension baisse avec la luminosite
                 gestionMoteur::fermer();
 
             //confirmation matin
-            if(flags.etatPorte == gestionMoteur::PORTE_FERMEE && moyenneLuminosite < SEUIL_MATINAL)
+            if(flags.etatPorte != gestionMoteur::PORTE_OUVERTE && moyenneLuminosite < SEUIL_MATINAL)
                 gestionMoteur::ouvrir();
             
             //Dans tous les cas on n'attend plus de confirmation
@@ -220,7 +221,6 @@ void ModeAutomatiqueSansHorloge()
 void ModeManuel()
 {
     digitalWrite(LED_BUILTIN, HIGH);
-    clignottementOff();
 
     //Ouverture/fermeture manuelle
     bool btnOuverture = digitalRead(PIN_BTN_OUVERTURE_MANUELLE) == BTN_ACTIF;
