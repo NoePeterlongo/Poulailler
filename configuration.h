@@ -78,6 +78,7 @@ Luminosite -> Une fois un seuil passe, on attend DELAI_LUMINOSITE avant de verif
 #define PIN_BTN_OUVERTURE_MANUELLE 2
 #define PIN_BTN_FERMETURE_MANUELLE 6
 #define PIN_BTN_MODE 3//mode auto/manuel
+#define PIN_DTR_MODULE_GSM 4//pour le mode veille
 
 
 #endif

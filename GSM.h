@@ -34,14 +34,15 @@ namespace GSM
     extern SoftwareSerial *SIM800;//port serie utilise pour le module GSM
     void TraiterSMS(String numero, String SMS);//ne pas utiliser, est appele mar MiseAJour
     extern CommandeGSM commande;//Ne pas interroger, est renvoyee par LireCommande()
-
+    extern int DTR;
 
 
     //Fonctions appelables:
 
-    void init(int TX_Pin_Cote_GSM, int RX_Pin_Cote_GSM, String codePIN = "");
+    void init(int TX_Pin_Cote_GSM, int RX_Pin_Cote_GSM, int _DTR = -1, String codePIN = "");
     //a appeler a chaque boucle, pour surveiller le port serie
     void MiseAJour();
+    void MiseEnVeille();
 
     //Une commande a ete recue
     extern bool commandeDisponible;
