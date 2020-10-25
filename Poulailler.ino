@@ -208,8 +208,8 @@ void ModeAutomatiqueSansHorloge()
         }
         
     }
-    else if( (flags.etatPorte == gestionMoteur::PORTE_OUVERTE && analogRead(PIN_PHOTORESISTANCE) > SEUIL_VESPERAL) ||
-            (flags.etatPorte == gestionMoteur::PORTE_FERMEE && analogRead(PIN_PHOTORESISTANCE) < SEUIL_MATINAL))
+    else if( (flags.etatPorte != gestionMoteur::PORTE_FERMEE && analogRead(PIN_PHOTORESISTANCE) > SEUIL_VESPERAL) ||
+            (flags.etatPorte != gestionMoteur::PORTE_OUVERTE && analogRead(PIN_PHOTORESISTANCE) < SEUIL_MATINAL))
     {//On lance le calcul de moyenne si la luminosite passe le seuil
         flags.enAttenteVerificationLuminosite = true;
         datePremiereMesureLuminosite = millis();
@@ -221,6 +221,7 @@ void ModeAutomatiqueSansHorloge()
 void ModeManuel()
 {
     digitalWrite(LED_BUILTIN, HIGH);
+    flags.enAttenteVerificationLuminosite = false;
 
     //Ouverture/fermeture manuelle
     bool btnOuverture = digitalRead(PIN_BTN_OUVERTURE_MANUELLE) == BTN_ACTIF;
