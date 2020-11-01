@@ -13,7 +13,7 @@ enum EnumMode {
 //FLAGS
 struct {
     bool ouvertureManuelleEnCours = false, fermetureManuelleEnCours = false;
-    bool enAttenteVerificationLuminosite = false;
+    bool enAttenteVerificationLuminosite = false, enAttenteVerificationLuminositeErreur = false;
     gestionMoteur::EnumEtatPorte etatPorte;
     EnumEtatSoleil etatSoleil; 
     bool btnModeEnfonce = false;//"le btn etait-il enfonce aux dernieres nouvelles ?"
@@ -21,8 +21,9 @@ struct {
 } flags;
 
 unsigned long datePremiereMesureLuminosite, dateDerniereMesureLuminosite;
-double moyenneLuminosite;
-unsigned long nbPointsMoyenne = 0;
+unsigned long datePremiereMesureLuminositeErreur, dateDerniereMesureLuminositeErreur;
+double moyenneLuminosite, moyenneLuminositeErreur;
+unsigned long nbPointsMoyenne = 0, nbPointsMoyenneErreur = 0;
 
 //Horloge
 DS3231 Horloge;
@@ -75,6 +76,9 @@ void loop()
     case EnumMode::AUTOMATIQUE_SANS_HORLOGE:
         ModeAutomatiqueSansHorloge();
         break;
+    case EnumMode::AUTOMATIQUE_SANS_PHOTORESISTANCE:
+        ModeAutomatiqueSansPhotoresistance();
+        break;
     default:
         break;
     }
@@ -113,7 +117,52 @@ void ModeAutomatiqueNormal()
         flags.mode = EnumMode::AUTOMATIQUE_SANS_HORLOGE; //Pour passer en mode sans horloge
         flags.enAttenteVerificationLuminosite = false;
         if(DEBUG_SERIAL) Serial.println("Erreur d'horloge, passage en mode sans horloge");
+        return;
     }
+    
+    //***********detection erreur de photoresistance********************
+    /* Cette verification se fait pendant les phases "JOUR" et "NUIT"
+    Si la luminosite passe le "SEUIL_ERREUR" correspondant, on passe en mode sans photoresistance.
+    Avant de passer en mode degrade, on fait une moyenne sur 10min pour verifier*/
+    //debut
+    if((flags.etatSoleil == JOUR && analogRead(PIN_PHOTORESISTANCE) > SEUIL_ERREUR_JOUR && !flags.enAttenteVerificationLuminositeErreur) ||
+        (flags.etatSoleil == NUIT && analogRead(PIN_PHOTORESISTANCE) < SEUIL_ERREUR_NUIT && !flags.enAttenteVerificationLuminositeErreur))
+    {
+        flags.enAttenteVerificationLuminositeErreur = true;
+        moyenneLuminositeErreur = analogRead(PIN_PHOTORESISTANCE);
+        nbPointsMoyenneErreur = 1;
+        dateDerniereMesureLuminositeErreur = millis();
+        datePremiereMesureLuminositeErreur = millis();
+    }
+    //En cours de moyenne erreur
+    if(flags.enAttenteVerificationLuminositeErreur && millis() > dateDerniereMesureLuminositeErreur + PERIODE_MESURE_LUMINOSITE)
+    {
+        dateDerniereMesureLuminositeErreur = millis();
+        moyenneLuminositeErreur = (moyenneLuminositeErreur*nbPointsMoyenneErreur + (double)analogRead(PIN_PHOTORESISTANCE))/(nbPointsMoyenneErreur+1);
+        nbPointsMoyenneErreur++;
+    }
+
+    //Fin de moyenne erreur, et decision
+    if(flags.enAttenteVerificationLuminositeErreur && millis() > datePremiereMesureLuminositeErreur + DELAI_LUMINOSITE_VERIFICATION_ERREUR)
+    {
+        flags.enAttenteVerificationLuminositeErreur = false;
+        if((moyenneLuminositeErreur > SEUIL_ERREUR_JOUR && flags.etatSoleil == JOUR) ||
+            (moyenneLuminositeErreur < SEUIL_ERREUR_NUIT && flags.etatSoleil == NUIT))
+        {
+            if(DEBUG_SERIAL) 
+            {
+                Serial.print("Erreur de luminosite detectee, passage en mode sans photoresistance\nLuminosite mesuree : ");
+                Serial.println(moyenneLuminositeErreur);
+            }
+            flags.mode = EnumMode::AUTOMATIQUE_SANS_PHOTORESISTANCE;
+        }
+    }
+
+    //Fin si on passe a l'AUBE ou au CREPUSCULE
+    if((flags.etatSoleil == AUBE || flags.etatSoleil == CREPUSCULE) && flags.enAttenteVerificationLuminositeErreur)
+        flags.enAttenteVerificationLuminositeErreur = false;
+
+    ///******************Fonctionnement normal********************
 
     //Cas determines par l'horloge
     if(flags.etatSoleil == JOUR && flags.etatPorte != gestionMoteur::PORTE_OUVERTE)
@@ -130,8 +179,8 @@ void ModeAutomatiqueNormal()
     }
     
     //Cas intermediaire, decide par luminosite
-    if( (flags.etatSoleil == CREPUSCULE && flags.etatPorte==gestionMoteur::PORTE_OUVERTE)   || 
-        (flags.etatSoleil == AUBE       && flags.etatPorte==gestionMoteur::PORTE_FERMEE)    )
+    if( (flags.etatSoleil == CREPUSCULE && flags.etatPorte!=gestionMoteur::PORTE_FERMEE)   || 
+        (flags.etatSoleil == AUBE       && flags.etatPorte!=gestionMoteur::PORTE_OUVERTE)    )
     {
         //2 cas : soit on attend une confirmation de luminosite, soit non
         if(flags.enAttenteVerificationLuminosite)

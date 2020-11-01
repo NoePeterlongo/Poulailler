@@ -54,7 +54,10 @@ Luminosite -> Une fois un seuil passe, on attend DELAI_LUMINOSITE avant de verif
 //detection du jour
 #define SEUIL_MATINAL       85//200
 #define SEUIL_VESPERAL      150//500
+#define SEUIL_ERREUR_JOUR   900
+#define SEUIL_ERREUR_NUIT   100
 #define DELAI_LUMINOSITE    600000L
+#define DELAI_LUMINOSITE_VERIFICATION_ERREUR    600000L
 #define PERIODE_MESURE_LUMINOSITE 1000 //pour la moyenne
 #define MARGE_PRELEVER      15//Les marges sont en minutes
 #define MARGE_POSTLEVER     45
