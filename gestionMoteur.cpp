@@ -127,7 +127,7 @@ namespace gestionMoteur{
         analogWrite(PIN_COMMANDE_MOTEUR_OUVERTURE, 0);
     }
 
-    enumEtatPorte etatPorte()
+    EnumEtatPorte etatPorte()
     {
         bool capteurOuverture = digitalRead(PIN_CAPTEUR_PORTE_OUVERTE) == CAPTEUR_ACTIF;
         bool capteurFermeture = digitalRead(PIN_CAPTEUR_PORTE_FERMEE) == CAPTEUR_ACTIF;

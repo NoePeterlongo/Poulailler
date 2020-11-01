@@ -59,9 +59,9 @@ void calculSoleil(int D, int M, int Y, float lat, float longitude,
         *minuteCoucher = (int)sunset;
     }
 
-enum enumEtatSoleil {JOUR, CREPUSCULE, NUIT, AUBE, ERREUR=-1};
+enum EnumEtatSoleil {JOUR, CREPUSCULE, NUIT, AUBE, ERREUR=-1};
 
-enumEtatSoleil getEtatSoleil(int D, int M, int Y, int H, int Min, int margePreLever=0, int margePostLever=0,
+EnumEtatSoleil getEtatSoleil(int D, int M, int Y, int H, int Min, int margePreLever=0, int margePostLever=0,
          int margePreCoucher=0, int margePostCoucher=0, float lat=45.9f, float longitude=6.15f)
 {
     //verification des donnees

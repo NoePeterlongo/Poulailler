@@ -5,16 +5,19 @@
 #include "calculSoleil.h"
 #include "DS3231.h"
 
+//Modes 
+enum EnumMode {
+    MANUEL, AUTOMATIQUE_NORMAL, AUTOMATIQUE_SANS_HORLOGE, AUTOMATIQUE_SANS_PHOTORESISTANCE
+} ;
 
 //FLAGS
 struct {
     bool ouvertureManuelleEnCours = false, fermetureManuelleEnCours = false;
-    bool modeManuel = false;
     bool enAttenteVerificationLuminosite = false;
-    gestionMoteur::enumEtatPorte etatPorte;
-    enumEtatSoleil etatSoleil; 
+    gestionMoteur::EnumEtatPorte etatPorte;
+    EnumEtatSoleil etatSoleil; 
     bool btnModeEnfonce = false;//"le btn etait-il enfonce aux dernieres nouvelles ?"
-    bool erreurHorloge = false;
+    EnumMode mode = AUTOMATIQUE_NORMAL;
 } flags;
 
 unsigned long datePremiereMesureLuminosite, dateDerniereMesureLuminosite;
@@ -54,23 +57,26 @@ void loop()
         if(digitalRead(PIN_BTN_MODE) != BTN_ACTIF)
         {
             flags.btnModeEnfonce = false;
-            flags.modeManuel = !flags.modeManuel;
-            if(DEBUG_SERIAL) {Serial.print("Passage en mode "); if(flags.modeManuel) Serial.println("manuel"); else Serial.println("automatique");}
+            flags.mode = flags.mode == EnumMode::MANUEL ? EnumMode::AUTOMATIQUE_NORMAL : EnumMode::MANUEL;
+            if(DEBUG_SERIAL) {Serial.print("Passage en mode "); if(flags.mode==EnumMode::MANUEL) Serial.println("manuel"); else Serial.println("automatique");}
         }
     }
     else flags.btnModeEnfonce = false;//au cas ou
 
-    if(flags.modeManuel)
+    //Procedure
+    switch (flags.mode)
     {
+    case EnumMode::MANUEL:
         ModeManuel();
-    }
-    //Mode automatique
-    else
-    {
-        if(!flags.erreurHorloge)
-            ModeAutomatiqueNormal();
-        else//mode degrade
-            ModeAutomatiqueSansHorloge();
+        break;
+    case EnumMode::AUTOMATIQUE_NORMAL:
+        ModeAutomatiqueNormal();
+        break;
+    case EnumMode::AUTOMATIQUE_SANS_HORLOGE:
+        ModeAutomatiqueSansHorloge();
+        break;
+    default:
+        break;
     }
 
     //Affichage des mesures
@@ -86,12 +92,10 @@ void loop()
         Serial.print(Horloge.getTemperature()); Serial.print(";");
         Serial.print((double)analogRead(A0)); Serial.print(";");
         Serial.print(flags.etatSoleil); Serial.print(";");
-        Serial.print(flags.modeManuel); Serial.print(";");
+        Serial.print(flags.mode); Serial.print(";");
         Serial.print(gestionMoteur::etatPorte()); Serial.print(";");
         Serial.print(flags.enAttenteVerificationLuminosite); Serial.print(";");
         Serial.print(moyenneLuminosite); Serial.print(";");
-        Serial.println(flags.erreurHorloge);
-
     }
 }
 
@@ -104,9 +108,9 @@ void ModeAutomatiqueNormal()
     flags.etatPorte = gestionMoteur::etatPorte();
 
     //detection erreur d'horloge
-    if(flags.etatSoleil == enumEtatSoleil::ERREUR)
+    if(flags.etatSoleil == EnumEtatSoleil::ERREUR)
     {
-        flags.erreurHorloge = true; //Pour passer en mode sans horloge
+        flags.mode = EnumMode::AUTOMATIQUE_SANS_HORLOGE; //Pour passer en mode sans horloge
         flags.enAttenteVerificationLuminosite = false;
         if(DEBUG_SERIAL) Serial.println("Erreur d'horloge, passage en mode sans horloge");
     }

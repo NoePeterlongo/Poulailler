@@ -17,7 +17,7 @@ namespace gestionMoteur
     void stop();
 
     //etats possibles
-    enum enumEtatPorte{PORTE_OUVERTE, PORTE_FERMEE, INTERMEDIAIRE, ERREUR};
+    enum EnumEtatPorte{PORTE_OUVERTE, PORTE_FERMEE, INTERMEDIAIRE, ERREUR};
     //info
-    enumEtatPorte etatPorte();
+    EnumEtatPorte etatPorte();
 }
