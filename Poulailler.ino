@@ -41,8 +41,6 @@ void setup()
     //initialisation des flags
     flags.etatPorte = gestionMoteur::etatPorte();
     flags.etatSoleil = getEtatSoleil(Horloge.getDate(), Horloge.getMonth(century), 2000+Horloge.getYear(), Horloge.getHour(h12, PM), Horloge.getMinute(), MARGE_PRELEVER, MARGE_POSTLEVER, MARGE_PRECOUCHER, MARGE_POSTCOUCHER);
-    
-    if(flags.etatPorte != gestionMoteur::PORTE_OUVERTE) gestionMoteur::ouvrir();
 }
 
 void loop()
@@ -215,6 +213,37 @@ void ModeAutomatiqueSansHorloge()
         datePremiereMesureLuminosite = millis();
         dateDerniereMesureLuminosite = millis();
         nbPointsMoyenne = 0;
+    }
+}
+
+void ModeAutomatiqueSansPhotoresistance()
+{
+    /*
+    Dans ce mode on enleve la gestion de la photoresistance qui 
+    si elle est defectueuse risque de faire fermer trop tot.
+    On utilise les marges habituelles: 
+        On ouvre quand on est dans l'état "JOUR", 
+        et on referme quand on est dans l'état "NUIT"
+    */
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(30);
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(100);
+
+    //Determination jour/nuit
+    flags.etatSoleil = getEtatSoleil(Horloge.getDate(), Horloge.getMonth(century), 2000+Horloge.getYear(), Horloge.getHour(h12, PM), Horloge.getMinute(), MARGE_PRELEVER, MARGE_POSTLEVER, MARGE_PRECOUCHER, MARGE_POSTCOUCHER);
+    flags.etatPorte = gestionMoteur::etatPorte();
+
+    //On ne vérifie pas l'etat de l'horloge (parce que bon, je ne saurais pas trop quoi faire si elle lache aussi)
+
+    if(flags.etatSoleil == JOUR && flags.etatPorte != gestionMoteur::PORTE_OUVERTE)
+    {
+        gestionMoteur::ouvrir();
+    }
+
+    if(flags.etatSoleil == NUIT && flags.etatPorte != gestionMoteur::PORTE_FERMEE)
+    {
+        gestionMoteur::fermer();
     }
 }
 
