@@ -99,7 +99,7 @@ void loop()
         Serial.print(flags.mode); Serial.print(";");
         Serial.print(gestionMoteur::etatPorte()); Serial.print(";");
         Serial.print(flags.enAttenteVerificationLuminosite); Serial.print(";");
-        Serial.print(moyenneLuminosite); Serial.print(";");
+        Serial.println(moyenneLuminosite);
     }
 }
 
